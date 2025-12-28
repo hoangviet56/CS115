@@ -8,33 +8,6 @@ import math
 
 class LinearRegressionModel:
     """
-    Linear regression với nghiệm closed-form:
-        w = argmin ||Xw - y||^2
-
-    Dùng để khảo sát double descent theo số chiều feature.
-    """
-
-    def __init__(self):
-        self.w = None
-
-    def fit(self, X, y):
-        """
-        X: (n, d)
-        y: (n,)
-        """
-        # Moore–Penrose pseudo-inverse để xử lý cả over/under-parameterized
-        X_pinv = torch.linalg.pinv(X)
-        self.w = X_pinv @ y
-
-    def predict(self, X):
-        return X @ self.w
-
-    def mse(self, X, y):
-        y_pred = self.predict(X)
-        return torch.mean((y_pred - y) ** 2).item()
-    
-class RandomFeatureLinearModel:
-    """
     Linear regression on random Gaussian features:
         phi(x) = ReLU(Wx) or Gaussian random features
     """

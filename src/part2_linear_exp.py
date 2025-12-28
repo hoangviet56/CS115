@@ -1,6 +1,6 @@
 import os
 from dataset import make_random_feature_regression
-from models import RandomFeatureLinearModel
+from models import LinearRegressionModel
 
 N_TRAIN = 400
 N_TEST = 10000
@@ -25,7 +25,7 @@ num_features_list = (
 results = []
 
 for D in num_features_list:
-    model = RandomFeatureLinearModel(
+    model = LinearRegressionModel(
         input_dim=INPUT_DIM,
         num_features=D,
         seed=SEED
