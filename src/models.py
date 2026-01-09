@@ -1,34 +1,41 @@
 import torch
+import torch.nn as nn
 import math
 
 
 # ============================================================
-# Linear Regression Model (Closed-form, Part 2)
+# Part 2: Linear Regression Model (Iterative / Epoch-based)
 # ============================================================
 
-class LinearRegressionModel:
+class LinearRegressionModel(nn.Module):
     """
-    Linear regression on random Gaussian features:
-        phi(x) = ReLU(Wx) or Gaussian random features
+    Linear regression on random ReLU features.
+    Trained via SGD/Adam (Iterative).
     """
-
     def __init__(self, input_dim, num_features, seed=0):
+        super().__init__()
         torch.manual_seed(seed)
-        self.W = torch.randn(num_features, input_dim)
-        self.w = None
+        
+        # 1. Fixed Random Features (Layer 1)
+        # Weight cố định, không update (requires_grad=False)
+        self.W = nn.Parameter(torch.randn(num_features, input_dim), requires_grad=False)
+        
+        # 2. Learnable Readout (Layer 2)
+        # Bias=False để đúng tính chất random feature regression thuần túy
+        self.readout = nn.Linear(num_features, 1, bias=False)
+        
+        # Lưu num_features để dùng cho normalization
+        self.num_features = num_features
 
-    def features(self, X):
-        return torch.relu(X @ self.W.T)
-
-    def fit(self, X, y):
-        Phi = self.features(X)
-        self.w = torch.linalg.pinv(Phi) @ y
-
-    def predict(self, X):
-        return self.features(X) @ self.w
-
-    def mse(self, X, y):
-        return torch.mean((self.predict(X) - y) ** 2).item()
+    def forward(self, x):
+        # x: (Batch, Input_dim)
+        
+        # Feature map: phi(x) = ReLU(Wx^T) / sqrt(D)
+        # Chia cho sqrt(D) là cực kỳ quan trọng để ổn định gradient khi D lớn
+        phi = torch.relu(x @ self.W.T) / math.sqrt(self.num_features)
+        
+        # Output: (Batch,)
+        return self.readout(phi).squeeze()
 
 
 

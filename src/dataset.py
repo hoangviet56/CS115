@@ -4,26 +4,60 @@ from torchvision import datasets, transforms
 
 
 # ============================================================
-# Part 2: Synthetic Linear Regression Dataset
+# Part 2: Fashion-MNIST for Linear Regression
 # ============================================================
 
-def make_random_feature_regression(
-    n_train=400,
-    n_test=10000,
-    input_dim=20,
-    noise_std=0.1,
+def get_fashion_mnist_binary(
+    n_train=1000,
+    n_test=5000,
+    classes=(0, 1), # Mặc định lấy T-shirt/top (0) vs Trouser (1)
     seed=0
 ):
+    """
+    Fashion-MNIST binary regression task.
+    Labels:
+        class_0 -> -1
+        class_1 -> +1
+    """
     torch.manual_seed(seed)
     np.random.seed(seed)
 
-    w_star = torch.randn(input_dim)
+    transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Lambda(lambda x: x.view(-1))  # flatten 28x28 -> 784
+    ])
 
-    X_train = torch.randn(n_train, input_dim)
-    y_train = X_train @ w_star + noise_std * torch.randn(n_train)
+    # Tải FashionMNIST thay vì MNIST
+    train_dataset = datasets.FashionMNIST(
+        root="data",
+        train=True,
+        download=True,
+        transform=transform
+    )
 
-    X_test = torch.randn(n_test, input_dim)
-    y_test = X_test @ w_star + noise_std * torch.randn(n_test)
+    test_dataset = datasets.FashionMNIST(
+        root="data",
+        train=False,
+        download=True,
+        transform=transform
+    )
+
+    # Hàm lọc nhị phân (giống hệt hàm của MNIST cũ)
+    def filter_binary(dataset, n_samples):
+        X_list, y_list = [], []
+        count = 0
+        for x, y in dataset:
+            if y in classes:
+                label = -1.0 if y == classes[0] else 1.0
+                X_list.append(x)
+                y_list.append(torch.tensor(label))
+                count += 1
+                if count >= n_samples:
+                    break
+        return torch.stack(X_list), torch.stack(y_list)
+
+    X_train, y_train = filter_binary(train_dataset, n_train)
+    X_test, y_test = filter_binary(test_dataset, n_test)
 
     return X_train, y_train, X_test, y_test
 

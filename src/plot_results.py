@@ -76,16 +76,16 @@ if __name__ == "__main__":
 
     # Part 2: Linear Regression
     plot_double_descent(
-        result_file="logs/part2_linear.txt",
-        title="Part 2: Linear Regression Double Descent",
+        result_file="logs/part2_linear_avg.txt",
+        title="Linear Regression Double Descent",
         output_path="plots/part2_double_descent.png",
-        interpolation_threshold=200
+        interpolation_threshold=1000
     )
 
     # Part 3: Random Fourier Features
     plot_double_descent(
         result_file="logs/part3_rff.txt",
-        title="Part 3: Random Fourier Features Double Descent",
+        title="Random Fourier Features Double Descent",
         output_path="plots/part3_rff_double_descent.png",
         interpolation_threshold=1000
     )
