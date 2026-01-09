@@ -1,30 +1,54 @@
-# Thuc nghiem Double Descent voi Linear Model va Random Fourier Features
+# Thực nghiệm Double Descent với Linear Model và Random Fourier Features
 
-Repository nay chua ma nguon thuc nghiem hien tuong double descent trong cac mo hinh hoc may qua tham so, dua tren cac cong trinh cua Belkin et al. va Hastie et al.
+Repository này chứa mã nguồn thực nghiệm hiện tượng **double descent** trong các mô hình học máy quá tham số,
+dựa trên các công trình của **Belkin et al.** và **Hastie et al.**
 
-Toan bo thuc nghiem su dung Gradient Descent theo tung epoch (iterative training), khong su dung lazy training, nham phan anh dung implicit bias cua GD.
+Toàn bộ thực nghiệm sử dụng **Gradient Descent theo từng epoch (iterative training)**,
+không sử dụng *lazy training*, nhằm phản ánh đúng **implicit bias của GD**
+(dẫn đến nghiệm có norm nhỏ nhất như phân tích lý thuyết trong paper).
 
-## Tinh tai lap
-- Ket qua 100% co the tai lap
-- Co dinh random seed
-- Dataset tai tu dong
-- Khong co thanh phan ngau nhien khong kiem soat
+---
 
-## Cau truc repository
+## Tính tái lập
+
+- Kết quả **100% có thể tái lập**
+- Cố định random seed
+- Dataset được tải tự động
+- Không có thành phần ngẫu nhiên không kiểm soát
+
+---
+
+## Cấu trúc repository
+
+```
 .
-├── models.py
-├── dataset.py
-├── part2_linear_exp.py
-├── part3_rff_exp.py
-├── plot_results.py
-├── run_experiments.sh
+├── models.py              # Linear model và Random Fourier Features
+├── dataset.py             # Tải và tiền xử lý dataset (MNIST / Fashion-MNIST)
+├── part2_linear_exp.py    # Thực nghiệm double descent cho Linear Model
+├── part3_rff_exp.py       # Thực nghiệm double descent cho RFF
+├── plot_results.py        # Vẽ biểu đồ train / test error
+├── run_experiments.sh     # Script chạy toàn bộ thực nghiệm
 ├── requirements.txt
 ├── logs/
 └── plots/
+```
 
-## Cai dat
+---
+
+## Cài đặt
+
+```bash
 pip install -r requirements.txt
+```
 
-## Chay thuc nghiem
+---
+
+## Chạy thực nghiệm
+
+```bash
 chmod +x run_experiments.sh
 ./run_experiments.sh
+```
+
+Sau khi chạy xong, các hình vẽ double descent (train error và test error)
+sẽ được lưu trong thư mục `plots/`.
